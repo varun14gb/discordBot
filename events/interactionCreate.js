@@ -1,7 +1,3 @@
-const { Role } = require('discord.js');
-
-const wait = require('node:util').promisify(setTimeout);
-
 module.exports = {
     name: 'interactionCreate',
     async execute(interaction) {
@@ -10,18 +6,27 @@ module.exports = {
 
             if (interaction.commandName === 'makehero') {
 
-                await interaction.member.guild.roles.create({
-                    data: {
-                        name: 'Spiderman',
-                        color: 'RED',
-                    },
-                    reason: 'With Great Power Comes Great Responsibilty!',
-                })
-                await interaction.reply(`${user.username} has been promoted to the role Spiderman`);
+                let role = interaction.guild.roles.cache.find(role => role.name === "Spiderman");
+
+                await interaction.member.roles.add(role);
+
+                await interaction.reply(`${interaction.user.username}#${interaction.user.discriminator} has been promoted to role Spiderman`);
+            }
+            else if (interaction.commandName === 'removehero') {
+
+                const role = interaction.guild.roles.cache.find(role => role.name === "Spiderman");
+
+                await interaction.member.roles.remove(role);
+
+                await interaction.reply(`${interaction.user.username}#${interaction.user.discriminator} has been removed from role Spiderman`);
+            }
+            else {
+                await interaction.reply('Invalid Command!');
             }
 
         } catch (e) {
             console.error(e);
+            await interaction.reply('Some Error occured!');
         }
     },
 };
